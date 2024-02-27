@@ -24,9 +24,10 @@ async def text(update, context):
 async def image(update, context):
     await update.message.reply_text('Эй! Мы получили от тебя фотографию!')
 
-# функция для голосовых сообщений
+# Получение id голосового сообщения
 async def voice(update, context):
-    await update.message.reply_text('Голосовое сообщение получено!')
+    voice_id = update.message.voice.file_id
+    await update.message.reply_text(f'ID вашего голосового сообщения: {voice_id}')
 
 
 def main():
