@@ -1,4 +1,4 @@
-from telegram.ext import Application, CommandHandler, Updater, MessageHandler, Filters
+from telegram.ext import Application, CommandHandler, MessageHandler, filters
 from dotenv import load_dotenv
 import os
 
@@ -12,7 +12,21 @@ TOKEN = os.environ.get("TOKEN")
 
 # функция команды /start
 async def start(update, context):
-    await update.message.reply_text('Первая задача выполненазнерщт')
+    await update.message.reply_text('Первая задача выполнена')
+
+# функция для текстовых сообщений
+async def text(update, context):
+    message = update.message.text
+    char_count = len(message)
+    await update.message.reply_text(f"Количество символов: {char_count}")
+
+# функция для изображений
+async def image(update, context):
+    await update.message.reply_text('Эй! Мы получили от тебя фотографию!')
+
+# функция для голосовых сообщений
+async def voice(update, context):
+    await update.message.reply_text('Голосовое сообщение получено!')
 
 
 def main():
@@ -23,6 +37,15 @@ def main():
 
     # добавляем обработчик команды /start
     application.add_handler(CommandHandler("start", start))
+
+    # добавляем обработчик текстовых сообщений
+    application.add_handler(MessageHandler(filters.TEXT, text))
+
+    # добавляем обработчик сообщений с изображениями
+    application.add_handler(MessageHandler(filters.PHOTO, image))
+
+    # добавляем обработчик голосовых сообщений
+    application.add_handler(MessageHandler(filters.VOICE, voice))
 
     # запуск приложения (для остановки нужно нажать Ctrl-C)
     application.run_polling()
