@@ -1,4 +1,4 @@
-from telegram.ext import Application, CommandHandler
+from telegram.ext import Application, CommandHandler, Updater, MessageHandler, Filters
 from dotenv import load_dotenv
 import os
 
@@ -12,7 +12,7 @@ TOKEN = os.environ.get("TOKEN")
 
 # функция команды /start
 async def start(update, context):
-    await update.message.reply_text('Привет! Это самый простой бот.')
+    await update.message.reply_text('Первая задача выполненазнерщт')
 
 
 def main():
