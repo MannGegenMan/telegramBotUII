@@ -1,6 +1,8 @@
-from telegram.ext import Application, CommandHandler, MessageHandler, filters
+from telegram.ext import Application, CommandHandler, MessageHandler, filters, Updater
+from telegram import InlineKeyboardButton, InlineKeyboardMarkup, Message, ReplyKeyboardMarkup, ReplyKeyboardRemove
 from dotenv import load_dotenv
 import os
+import asyncio
 
 
 # возьмем переменные окружения из .env
@@ -13,6 +15,32 @@ TOKEN = os.environ.get("TOKEN")
 # функция команды /start
 async def start(update, context):
     await update.message.reply_text('Первая задача выполнена')
+
+# функция команды /warcraft
+async def warcraft(update, context):
+    keyboard = [[InlineKeyboardButton('Альянс', callback_data='1'),
+                 InlineKeyboardButton('Орда', callback_data='2')]]
+    
+    reply_markup = InlineKeyboardMarkup(keyboard)
+
+    message = await update.message.reply_text('Выберите сторону', reply_markup=reply_markup)
+
+    # Удаление сообщения с кнопками после их нажатия
+    await asyncio.sleep(5)  # Ждем 5 секунд (можно изменить время)
+    await context.bot.delete_message(chat_id=update.effective_chat.id, message_id=message.message_id)
+
+
+
+# функция обработки команд
+async def command_handler(update, context):
+    command = context.args[0] # получаем переданный параметр команды
+
+    if command == 'start':
+        await start(update, context)
+    elif command == 'warcraft':
+        await warcraft(update, context)
+    else:
+        await update.message.reply_text('Неизвестная команда')
 
 # функция для текстовых сообщений
 async def text(update, context):
@@ -38,6 +66,9 @@ def main():
 
     # добавляем обработчик команды /start
     application.add_handler(CommandHandler("start", start))
+
+    # добавлем обработчик команды /warcraft
+    application.add_handler(CommandHandler('warcraft', warcraft))
 
     # добавляем обработчик текстовых сообщений
     application.add_handler(MessageHandler(filters.TEXT, text))
