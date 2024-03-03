@@ -52,6 +52,16 @@ async def text(update, context):
 async def image(update, context):
     await update.message.reply_text('Эй! Мы получили от тебя фотографию!')
 
+    # достаем файл изображения из сообщения
+    photo = update.message.photo[-1]
+    file_id = photo.file_id
+    
+    # сохраняем изображение на диск
+    file = await photo.get_file()
+    await file.download_to_drive("image.jpg")
+    
+    await update.message.reply_text(f'ID вашего изображения: {file_id}')
+
 # Получение id голосового сообщения
 async def voice(update, context):
     voice_id = update.message.voice.file_id
@@ -73,7 +83,7 @@ def main():
     # добавляем обработчик текстовых сообщений
     application.add_handler(MessageHandler(filters.TEXT, text))
 
-    # добавляем обработчик сообщений с изображениями
+    # добавляем обработчик изображений
     application.add_handler(MessageHandler(filters.PHOTO, image))
 
     # добавляем обработчик голосовых сообщений
