@@ -2,6 +2,8 @@ from telegram.ext import Application, CommandHandler, CallbackQueryHandler
 from telegram import InlineKeyboardButton, InlineKeyboardMarkup
 from dotenv import load_dotenv
 import os
+import datetime
+import asyncio
 
 # возьмем переменные окружения из .env
 load_dotenv()
@@ -37,6 +39,17 @@ async def button(update, context):
 
     message = f'ID: {user_id}\nUsername: {username}\nFirst Name: {first_name}'
     await query.edit_message_text(text=message)
+
+async def update_time(context, update):
+    while True:
+        now = datetime.datetime.now()
+        time_str = now.strftime("Время %H:%M")
+        
+        # Используйте метод context.bot.edit_message_text для обновления текста в разделе "описание"
+        await context.bot.edit_message_text(chat_id=update.effective_chat.id, message_id=update.message.message_id, text=time_str)
+        
+        # Приостанавливаем выполнение функции на 5 минут
+        await asyncio.sleep(300)
 
 def main():
 
