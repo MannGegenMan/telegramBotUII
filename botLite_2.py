@@ -1,7 +1,7 @@
 import os
 import asyncio
 from dotenv import load_dotenv
-from telegram.ext import Application, CommandHandler
+from telegram.ext import Application, CommandHandler, MessageHandler, filters
 
 
 # возьмем переменные окружения из .env
@@ -21,6 +21,10 @@ async def help(update, context):
     # await asyncio.sleep(5)
     await update.message.reply_text('Вторая проверка')
 
+# функция для изображений
+async def image(update, context):
+    await asyncio.sleep(10)
+    await update.message.reply_text('Фотография получена в ассинхронном режиме')
 
 def main():
 
@@ -33,6 +37,9 @@ def main():
 
     # добавляем обработчик команды /help
     application.add_handler(CommandHandler("help", help, block=False))
+
+    # добавляем обработчик сообщений с изображениями
+    application.add_handler(MessageHandler(filters.PHOTO, image))
 
     # запуск приложения (для остановки нужно нажать Ctrl-C)
     application.run_polling()
